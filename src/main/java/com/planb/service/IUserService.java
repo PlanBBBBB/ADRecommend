@@ -1,6 +1,8 @@
 package com.planb.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.planb.dto.user.UserLoginDto;
+import com.planb.dto.user.UserQueryDto;
 import com.planb.entity.User;
 import com.planb.vo.Result;
 import com.planb.dto.user.UserRegisterDto;
@@ -16,4 +18,6 @@ public interface IUserService {
     User check();
 
     void update(UserUpdateDto user);
+
+    IPage<User> pageUser(UserQueryDto dto);
 }

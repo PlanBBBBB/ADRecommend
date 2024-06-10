@@ -2,9 +2,12 @@ package com.planb.service.impl;
 
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.planb.constant.UserConstants;
 import com.planb.dao.UserMapper;
 import com.planb.dto.user.UserLoginDto;
+import com.planb.dto.user.UserQueryDto;
 import com.planb.security.LoginUser;
 import com.planb.entity.User;
 import com.planb.service.IUserService;
@@ -15,6 +18,7 @@ import com.planb.dto.user.UserRegisterDto;
 import com.planb.dto.user.UserUpdateDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -137,6 +141,17 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
         loginUser.setUser(loginUserUser);
         String jsonStr = JSONUtil.toJsonStr(loginUser);
         RedisUtil.set(key, jsonStr);
+    }
+
+    @Override
+    public IPage<User> pageUser(UserQueryDto dto) {
+        LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(User::getType, "400010")
+                .like(Strings.isNotEmpty(dto.getUserName()), User::getUserName, dto.getUserName())
+                .like(Strings.isNotEmpty(dto.getName()), User::getName, dto.getName());
+        IPage<User> page = new Page<>(dto.getCurrentPage(), dto.getPageSize());
+        userMapper.selectPage(page, lqw);
+        return page;
     }
 
     private String getUserId() {
