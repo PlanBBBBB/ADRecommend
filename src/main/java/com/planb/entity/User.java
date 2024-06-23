@@ -1,6 +1,5 @@
 package com.planb.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -22,12 +21,12 @@ public class User {
     private String password;
     @ApiModelProperty("昵称")
     private String name;
-    @ApiModelProperty("姓名")
+    @ApiModelProperty("兴趣标签")
     private String interest;
     @ApiModelProperty("创建时间")
     private String created;
     @ApiModelProperty("修改时间")
-    private String modifyed;
-    @ApiModelProperty("用户类型")
+    private String modified;
+    @ApiModelProperty("用户类型（字典：400）")
     private String type;
 }

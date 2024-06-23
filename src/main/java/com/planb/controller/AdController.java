@@ -26,7 +26,7 @@ public class AdController {
 
     @PostMapping("/getAdById")
     @PreAuthorize("hasAuthority('400000')")
-    @ApiOperation("根据id获取广告")
+    @ApiOperation("根据id获取广告详情")
     public Result getAdById(@RequestBody GeneralIdDto dto) {
         Ad ad = adService.getAdById(dto.getId());
         return Result.ok(ad);

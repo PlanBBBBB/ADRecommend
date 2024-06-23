@@ -4,10 +4,8 @@ import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.planb.constant.RedisConstant;
-import com.planb.dao.AdMapper;
 import com.planb.dao.DictMapper;
 import com.planb.dao.UserBehaviorMapper;
-import com.planb.entity.Ad;
 import com.planb.entity.Dict;
 import com.planb.entity.UserBehavior;
 import com.planb.service.GlobalService;
@@ -32,7 +30,7 @@ public class GlobalServiceImpl implements GlobalService {
     @Override
     public void initDict() {
         LambdaQueryWrapper<Dict> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Dict::getIsvalid, 1);
+        queryWrapper.eq(Dict::getIsValid, 1);
         List<Dict> dictList = dictMapper.selectList(queryWrapper);
         JSONArray from = JSONArray.from(dictList);
         RedisUtil.set(RedisConstant.DICT, from.toJSONString(JSONWriter.Feature.WriteMapNullValue));

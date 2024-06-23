@@ -1,33 +1,5 @@
 server:
-  port: 8080
-
+  port: 10889
 spring:
-  datasource:
-    druid:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/ad_recommend?serverTimezone=UTC
-      username: root
-      password: root
-  redis:
-    host: localhost
-    port: 6379
-    database: 0
-    password:
-
-mybatis-plus:
-  global-config:
-    db-config:
-      id-type: auto
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-# mybatis 相关配置
-mybatis:
-  configuration-properties:
-    offsetAsPageNum: true
-    rowBoundsWithCount: true
-    reasonable: true
-  mapper-locations: mapper/*.xml
-
-BookHub:
-  path: D:\BookHub\img\
+  profiles:
+    active: dev

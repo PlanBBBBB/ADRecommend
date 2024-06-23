@@ -1,8 +1,10 @@
 package com.planb.controller.common;
 
 import com.planb.constant.UserConstants;
+import com.planb.dto.common.GeneralIdDto;
 import com.planb.dto.user.UserLoginDto;
 import com.planb.service.IUserService;
+import com.planb.utils.DictUtil;
 import com.planb.vo.Result;
 import com.planb.dto.user.UserRegisterDto;
 import io.swagger.annotations.Api;
@@ -38,6 +40,12 @@ public class CommonController {
     public Result logout() {
         userService.logout();
         return Result.ok(UserConstants.LOGOUT_SUCCESS);
+    }
+
+    @PostMapping("/getDictByDictType")
+    @ApiOperation("根据字典code获取字典")
+    public Result getDictByDictType(@RequestBody GeneralIdDto dto) {
+        return Result.ok(DictUtil.getDictByType(dto.getId()));
     }
 
 }

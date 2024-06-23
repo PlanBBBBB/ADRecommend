@@ -76,4 +76,28 @@ public class DictUtil {
                 .collect(Collectors.toMap(Dict::getDictcode, Dict::getDictname));
     }
 
+    /**
+     * 根据字典获取名称
+     */
+    public static String changeDict(String str) {
+        if (str.isEmpty()) {
+            return "";
+        }
+        if (str.contains(",")) {
+            String[] split = str.split(",");
+            StringBuilder sb = new StringBuilder();
+            // 遍历数组
+            for (int i = 0; i < split.length; i++) {
+                Dict dict = DictUtil.getDictByCode(split[i]);
+                sb.append(dict.getDictname());
+                if (i != split.length - 1) {
+                    sb.append(",");
+                }
+            }
+            return sb.toString();
+        } else {
+            Dict dict = DictUtil.getDictByCode(str);
+            return dict.getDictname();
+        }
+    }
 }

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+<!--    <include resource="org/springframework/boot/logging/logback/base.xml"/>-->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <property name="default_log_path" value="logs"/>
+    <property name="LOG_PATH" value="${LOG_PATH:-${default_log_path}}"/>
+    <property name="LOG_FILE" value="${LOG_FILE:-api}"/>
+    <property name="LOG_ERROR" value="${LOG_ERROR:-error}"/>
+    <springProfile name="!dev">
+        <appender name="ALL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <encoder>
+                <pattern>%d %-5p [%t] %logger : %m%n</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+            <file>${LOG_PATH}/${LOG_FILE}.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_PATH}/apis/${LOG_FILE}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>100MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+                <!--日志文档保留天数-->
+                <maxHistory>30</maxHistory>
+            </rollingPolicy>
+        </appender>
+    </springProfile>
+
+    <!-- 2.4 level为 ERROR 日志，时间滚动输出  -->
+    <springProfile name="!dev">
+        <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <!--日志文档输出格式-->
+            <encoder>
+                <pattern>%d %-5p [%t] %logger : %m%n</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+            <!-- 正在记录的日志文档的路径及文档名 -->
+            <file>${LOG_PATH}/${LOG_ERROR}.log</file>
+            <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_PATH}/errors/${LOG_ERROR}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>100MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+                <!--日志文档保留天数-->
+                <maxHistory>30</maxHistory>
+            </rollingPolicy>
+            <!-- 此日志文档只记录ERROR级别的 -->
+            <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                <level>ERROR</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+        </appender>
+    </springProfile>
+
+    <springProfile name="!dev">
+        <!-- 异步输出 -->
+        <appender name="async-all" class="ch.qos.logback.classic.AsyncAppender">
+            <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+            <discardingThreshold>0</discardingThreshold>
+            <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+            <queueSize>512</queueSize>
+            <!-- 添加附加的appender,最多只能添加一个 -->
+            <appender-ref ref="ALL_FILE"/>
+        </appender>
+    </springProfile>
+
+    <springProfile name="!dev">
+        <!-- 异步输出 -->
+        <appender name="async-error" class="ch.qos.logback.classic.AsyncAppender">
+            <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+            <discardingThreshold>0</discardingThreshold>
+            <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+            <queueSize>512</queueSize>
+            <!-- 添加附加的appender,最多只能添加一个 -->
+            <appender-ref ref="ERROR_FILE"/>
+        </appender>
+    </springProfile>
+    <!--TRACE < DEBUG < INFO < WARN < ERROR-->
+    <logger name="com.java" level="TRACE"/>
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <springProfile name="!dev">
+            <appender-ref ref="async-all"/>
+            <appender-ref ref="async-error"/>
+        </springProfile>
+    </root>
+
+</configuration>

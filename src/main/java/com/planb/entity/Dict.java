@@ -1,5 +1,6 @@
 package com.planb.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModelProperty;
@@ -18,7 +19,8 @@ public class Dict {
     @ApiModelProperty("字典描述")
     private String dictdesc;
     @ApiModelProperty("是否有效")
-    private String isvalid;
+    @TableField("isValid")
+    private String isValid;
     @ApiModelProperty("字典排序")
     private String dictsort;
     @ApiModelProperty("创建时间")

@@ -55,16 +55,16 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.itheima.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.planb.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("BookHub")
+                .title("AdRecommend")
                 .version("1.0")
-                .description("BookHub接口文档")
+                .description("AdRecommend接口文档")
                 .build();
     }
 

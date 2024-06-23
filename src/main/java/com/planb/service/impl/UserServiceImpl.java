@@ -11,6 +11,7 @@ import com.planb.dto.user.UserQueryDto;
 import com.planb.security.LoginUser;
 import com.planb.entity.User;
 import com.planb.service.IUserService;
+import com.planb.utils.DictUtil;
 import com.planb.utils.JwtUtil;
 import com.planb.utils.RedisUtil;
 import com.planb.vo.Result;
@@ -151,6 +152,13 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
                 .like(Strings.isNotEmpty(dto.getName()), User::getName, dto.getName());
         IPage<User> page = new Page<>(dto.getCurrentPage(), dto.getPageSize());
         userMapper.selectPage(page, lqw);
+        List<User> records = page.getRecords();
+        for (User e : records) {
+            String interest = e.getInterest();
+            String type = e.getType();
+            e.setInterest(DictUtil.changeDict(interest));
+            e.setType(DictUtil.changeDict(type));
+        }
         return page;
     }
 

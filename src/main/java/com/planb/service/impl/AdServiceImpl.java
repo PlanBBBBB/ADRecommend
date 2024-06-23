@@ -16,6 +16,7 @@ import com.planb.entity.User;
 import com.planb.entity.UserBehavior;
 import com.planb.security.LoginUser;
 import com.planb.service.IAdService;
+import com.planb.utils.DictUtil;
 import com.planb.utils.RedisUtil;
 import com.planb.utils.SVDRecommendation;
 import com.planb.utils.ValidateUtil;
@@ -85,6 +86,15 @@ public class AdServiceImpl implements IAdService {
                 .eq(Strings.isNotEmpty(dto.getIsValid()), Ad::getIsValid, dto.getIsValid());
         IPage<Ad> page = new Page<>(dto.getCurrentPage(), dto.getPageSize());
         adMapper.selectPage(page, lqw);
+        List<Ad> records = page.getRecords();
+        for (Ad ad : records) {
+            String keyWords = ad.getKeyWords();
+            String isValid = ad.getIsValid();
+            String type = ad.getType();
+            ad.setKeyWords(DictUtil.changeDict(keyWords));
+            ad.setType(DictUtil.changeDict(type));
+            ad.setIsValid(isValid.equals("1") ? "有效" : "无效");
+        }
         return page;
     }
 
@@ -176,7 +186,7 @@ public class AdServiceImpl implements IAdService {
 
     // 获取广告的关键词列表
     private List<String> getAdKeywords(Ad ad) {
-        return Arrays.asList(ad.getKeywords().split(","));
+        return Arrays.asList(ad.getKeyWords().split(","));
     }
 
     /*===================基于协调过滤算法实现=======================*/
