@@ -9,6 +9,7 @@ import com.planb.vo.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,7 @@ public class BehaviorController {
 
     @PostMapping("pageBehavior")
     @ApiOperation("后台分页获取用户行为")
+    @PreAuthorize("hasAuthority('400000')")
     public Result pageBehavior(@RequestBody PageBehaviorDto dto){
         int currentPage = dto.getCurrentPage();
         IPage<UserBehavior> page = userBehaviorService.pageBehavior(dto);
