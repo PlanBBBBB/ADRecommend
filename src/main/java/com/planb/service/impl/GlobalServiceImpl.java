@@ -1,6 +1,7 @@
 package com.planb.service.impl;
 
 import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.JSONWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.planb.constant.RedisConstant;
@@ -11,6 +12,7 @@ import com.planb.entity.UserBehavior;
 import com.planb.service.GlobalService;
 import com.planb.service.IAdService;
 import com.planb.utils.RedisUtil;
+import com.planb.vo.CurrentEngineVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +52,10 @@ public class GlobalServiceImpl implements GlobalService {
 
     @Override
     public void initEngine() {
-        RedisUtil.set(RedisConstant.RECOMMEND_ENGINE, RedisConstant.DEFAULT_RECOMMEND_ENGINE);
+        CurrentEngineVo vo = new CurrentEngineVo();
+        vo.setDictcode("500000");
+        vo.setDictname("content");
+        JSONObject jsonObject = JSONObject.from(vo);
+        RedisUtil.set(RedisConstant.RECOMMEND_ENGINE, jsonObject.toString());
     }
 }

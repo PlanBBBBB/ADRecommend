@@ -43,11 +43,7 @@ public class UserBehaviorServiceImpl implements IUserBehaviorService {
         IPage<UserBehavior> page = new Page<>(dto.getCurrentPage(), dto.getPageSize());
         userBehaviorMapper.selectPage(page, lqw);
         List<UserBehavior> records = page.getRecords();
-        for (UserBehavior behavior : records) {
-            String action = behavior.getAction();
-            String actionStr = DictUtil.changeDict(action);
-            behavior.setAction(actionStr);
-        }
+        records.forEach(behavior -> behavior.setAction(DictUtil.changeDict(behavior.getAction())));
         return page;
     }
 }

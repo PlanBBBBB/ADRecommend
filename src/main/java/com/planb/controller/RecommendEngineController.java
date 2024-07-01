@@ -1,10 +1,13 @@
 package com.planb.controller;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.planb.constant.RedisConstant;
 import com.planb.dto.engine.ChangeEngineDto;
 import com.planb.entity.Dict;
 import com.planb.utils.DictUtil;
 import com.planb.utils.RedisUtil;
+import com.planb.vo.CurrentEngineVo;
 import com.planb.vo.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,14 +31,20 @@ public class RecommendEngineController {
         Dict dict = DictUtil.getDictByCode(dto.getDictcode());
         log.info(dict.toString());
         log.info(dict.getDictname());
-        RedisUtil.set(RedisConstant.RECOMMEND_ENGINE, dict.getDictname());
+        CurrentEngineVo vo = new CurrentEngineVo();
+        vo.setDictcode(dict.getDictcode());
+        vo.setDictname(dict.getDictname());
+        JSONObject jsonObject = JSONObject.from(vo);
+        // 设置当前推荐引擎
+        RedisUtil.set(RedisConstant.RECOMMEND_ENGINE, jsonObject.toString());
         return Result.ok();
     }
 
     @GetMapping("/get")
     @ApiOperation("获取当前推荐引擎")
     public Result getCurrentEngine() {
-        String engine = RedisUtil.get(RedisConstant.RECOMMEND_ENGINE);
-        return Result.ok(engine);
+        String json = RedisUtil.get(RedisConstant.RECOMMEND_ENGINE);
+        CurrentEngineVo vo = JSON.parseObject(json, CurrentEngineVo.class);
+        return Result.ok(vo);
     }
 }
