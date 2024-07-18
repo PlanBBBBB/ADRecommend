@@ -5,8 +5,8 @@ import com.planb.dto.common.GeneralIdDto;
 import com.planb.dto.user.UserLoginDto;
 import com.planb.entity.Dict;
 import com.planb.service.IUserService;
-import com.planb.utils.DictUtil;
-import com.planb.vo.DictWithParentVo;
+import com.planb.util.DictUtil;
+import com.planb.vo.DictWithParentVO;
 import com.planb.vo.Result;
 import com.planb.dto.user.UserRegisterDto;
 import io.swagger.annotations.Api;
@@ -57,13 +57,13 @@ public class CommonController {
     @ApiOperation("根据dictType查询字典包含子字典")
     public Result getDictWithParent(@RequestBody GeneralIdDto dto) {
         List<Dict> list = DictUtil.getDictByType(dto.getId());
-        List<DictWithParentVo> vos = list.stream().map(e -> {
-            DictWithParentVo vo = new DictWithParentVo();
+        List<DictWithParentVO> vos = list.stream().map(e -> {
+            DictWithParentVO vo = new DictWithParentVO();
             vo.setDictcode(e.getDictcode());
             vo.setDictname(e.getDictname());
             List<Dict> dictByParent = DictUtil.getDictByParent(e.getDictcode());
-            List<DictWithParentVo> collect = dictByParent.stream().map(dict -> {
-                DictWithParentVo vo1 = new DictWithParentVo();
+            List<DictWithParentVO> collect = dictByParent.stream().map(dict -> {
+                DictWithParentVO vo1 = new DictWithParentVO();
                 vo1.setDictcode(dict.getDictcode());
                 vo1.setDictname(dict.getDictname());
                 return vo1;

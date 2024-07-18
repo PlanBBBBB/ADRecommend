@@ -1,4 +1,4 @@
-package com.planb.utils;
+package com.planb.util;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

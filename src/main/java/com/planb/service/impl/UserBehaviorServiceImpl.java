@@ -11,29 +11,35 @@ import com.planb.dto.behavior.AddBehaviorDto;
 import com.planb.dto.behavior.PageBehaviorDto;
 import com.planb.entity.UserBehavior;
 import com.planb.service.IUserBehaviorService;
-import com.planb.utils.DictUtil;
-import com.planb.utils.RedisUtil;
+import com.planb.util.DictUtil;
+import com.planb.util.RedisUtil;
+import com.planb.util.threadpool.GlobalThreadPool;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 
 @Service
 @RequiredArgsConstructor
 public class UserBehaviorServiceImpl implements IUserBehaviorService {
 
     private final UserBehaviorMapper userBehaviorMapper;
+    private final ExecutorService executor = GlobalThreadPool.getInstance();
 
     @Override
     public void add(AddBehaviorDto dto) {
-        UserBehavior userBehavior = new UserBehavior();
-        BeanUtils.copyProperties(dto, userBehavior);
-        userBehaviorMapper.insert(userBehavior);
-        List<UserBehavior> behaviorList = userBehaviorMapper.selectList(null);
-        JSONArray from = JSONArray.from(behaviorList);
-        RedisUtil.set(RedisConstant.USER_BEHAVIOR, from.toJSONString(JSONWriter.Feature.WriteMapNullValue));
+        CompletableFuture.runAsync(() -> {
+            UserBehavior userBehavior = new UserBehavior();
+            BeanUtils.copyProperties(dto, userBehavior);
+            userBehaviorMapper.insert(userBehavior);
+            List<UserBehavior> behaviorList = userBehaviorMapper.selectList(null);
+            JSONArray from = JSONArray.from(behaviorList);
+            RedisUtil.set(RedisConstant.USER_BEHAVIOR, from.toJSONString(JSONWriter.Feature.WriteMapNullValue));
+        }, executor);
     }
 
     @Override

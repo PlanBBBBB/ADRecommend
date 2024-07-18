@@ -11,8 +11,8 @@ import com.planb.entity.Dict;
 import com.planb.entity.UserBehavior;
 import com.planb.service.GlobalService;
 import com.planb.service.IAdService;
-import com.planb.utils.RedisUtil;
-import com.planb.vo.CurrentEngineVo;
+import com.planb.util.RedisUtil;
+import com.planb.vo.CurrentEngineVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -52,7 +52,7 @@ public class GlobalServiceImpl implements GlobalService {
 
     @Override
     public void initEngine() {
-        CurrentEngineVo vo = new CurrentEngineVo();
+        CurrentEngineVO vo = new CurrentEngineVO();
         vo.setDictcode("500000");
         vo.setDictname("content");
         JSONObject jsonObject = JSONObject.from(vo);

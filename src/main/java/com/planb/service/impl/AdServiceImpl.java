@@ -16,10 +16,11 @@ import com.planb.entity.User;
 import com.planb.entity.UserBehavior;
 import com.planb.security.LoginUser;
 import com.planb.service.IAdService;
-import com.planb.utils.DictUtil;
-import com.planb.utils.RedisUtil;
-import com.planb.utils.SVDRecommendation;
-import com.planb.utils.ValidateUtil;
+import com.planb.util.DictUtil;
+import com.planb.util.RedisUtil;
+import com.planb.util.SVDRecommendation;
+import com.planb.util.ValidateUtil;
+import com.planb.util.threadpool.GlobalThreadPool;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.BeanUtils;
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,6 +39,7 @@ public class AdServiceImpl implements IAdService {
 
     private final AdMapper adMapper;
     private final UserBehaviorMapper userBehaviorMapper;
+    private final ExecutorService executor = GlobalThreadPool.getInstance();
 
     @Override
     public Ad getAdById(String id) {
@@ -45,26 +48,32 @@ public class AdServiceImpl implements IAdService {
 
     @Override
     public void add(AddAdDto dto) {
-        Ad ad = new Ad();
-        BeanUtils.copyProperties(dto, ad);
-        adMapper.insert(ad);
-        this.storeAdToRedis();
+        CompletableFuture.runAsync(() -> {
+            Ad ad = new Ad();
+            BeanUtils.copyProperties(dto, ad);
+            adMapper.insert(ad);
+            this.storeAdToRedis();
+        }, executor);
     }
 
     @Override
     public void update(UpAdDto dto) {
-        Ad ad = adMapper.selectById(dto.getId());
-        BeanUtils.copyProperties(dto, ad);
-        adMapper.updateById(ad);
-        this.storeAdToRedis();
+        CompletableFuture.runAsync(() -> {
+            Ad ad = adMapper.selectById(dto.getId());
+            BeanUtils.copyProperties(dto, ad);
+            adMapper.updateById(ad);
+            this.storeAdToRedis();
+        }, executor);
     }
 
     @Override
     public void delete(String id) {
-        Ad ad = adMapper.selectById(id);
-        ad.setIsValid("0");
-        adMapper.updateById(ad);
-        this.storeAdToRedis();
+        CompletableFuture.runAsync(() -> {
+            Ad ad = adMapper.selectById(id);
+            ad.setIsValid("0");
+            adMapper.updateById(ad);
+            this.storeAdToRedis();
+        }, executor);
     }
 
     @Override
@@ -123,12 +132,21 @@ public class AdServiceImpl implements IAdService {
                 //基于位置归一化和曝光频次控制算法
                 recommendedAds = recommendAdsByPositionAndExposure(user, numRecommendations);
                 break;
+            case "AI":
+                recommendedAds = recommendAdsByAI(user, numRecommendations);
             default:
                 throw new RuntimeException("未知的推荐引擎");
         }
 
         // 添加多样性并探索性
         return addDiversityAndExploration(recommendedAds, numRecommendations);
+    }
+
+    /*===================基于AI实现=======================*/
+
+    private List<Ad> recommendAdsByAI(User user, int numRecommendations) {
+
+        return null;
     }
 
 
@@ -312,14 +330,15 @@ public class AdServiceImpl implements IAdService {
     private List<Ad> recommendAdsByPositionAndExposure(User user, int numRecommendations) {
         List<String> userInterests = getUserInterests(user);
         List<Ad> allAds = getAllAds();
-        double maxPosition = allAds.stream().mapToDouble(Ad::getPosition).max().orElse(1.0);
+        double maxPosition = allAds.stream().mapToDouble((ad)-> Double.parseDouble(ad.getPosition())).max().orElse(1.0);
 
         // 为每个广告计算综合权重
         Map<Ad, Double> adWeightMap = new HashMap<>();
         for (Ad ad : allAds) {
             List<String> adKeywords = getAdKeywords(ad);
             double similarity = calculateSimilarity(userInterests, adKeywords);
-            double positionWeight = getPositionWeight(ad.getPosition(), maxPosition);
+            String position = ad.getPosition();
+            double positionWeight = getPositionWeight(Double.parseDouble(position), maxPosition);
             double exposureWeight = getExposureWeight(ad.getExposureCount());
             double totalWeight = similarity * positionWeight * exposureWeight;
             adWeightMap.put(ad, totalWeight);

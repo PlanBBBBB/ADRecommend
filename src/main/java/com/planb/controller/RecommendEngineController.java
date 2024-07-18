@@ -5,9 +5,9 @@ import com.alibaba.fastjson2.JSONObject;
 import com.planb.constant.RedisConstant;
 import com.planb.dto.engine.ChangeEngineDto;
 import com.planb.entity.Dict;
-import com.planb.utils.DictUtil;
-import com.planb.utils.RedisUtil;
-import com.planb.vo.CurrentEngineVo;
+import com.planb.util.DictUtil;
+import com.planb.util.RedisUtil;
+import com.planb.vo.CurrentEngineVO;
 import com.planb.vo.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,9 +29,7 @@ public class RecommendEngineController {
     @ApiOperation("修改当前推荐引擎")
     public Result changeEngine(@RequestBody ChangeEngineDto dto) {
         Dict dict = DictUtil.getDictByCode(dto.getDictcode());
-        log.info(dict.toString());
-        log.info(dict.getDictname());
-        CurrentEngineVo vo = new CurrentEngineVo();
+        CurrentEngineVO vo = new CurrentEngineVO();
         vo.setDictcode(dict.getDictcode());
         vo.setDictname(dict.getDictname());
         JSONObject jsonObject = JSONObject.from(vo);
@@ -44,7 +42,7 @@ public class RecommendEngineController {
     @ApiOperation("获取当前推荐引擎")
     public Result getCurrentEngine() {
         String json = RedisUtil.get(RedisConstant.RECOMMEND_ENGINE);
-        CurrentEngineVo vo = JSON.parseObject(json, CurrentEngineVo.class);
+        CurrentEngineVO vo = JSON.parseObject(json, CurrentEngineVO.class);
         return Result.ok(vo);
     }
 }

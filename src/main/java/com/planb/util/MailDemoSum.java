@@ -1,4 +1,4 @@
-package com.planb.utils;
+package com.planb.util;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;

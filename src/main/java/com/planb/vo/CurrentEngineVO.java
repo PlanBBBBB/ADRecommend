@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @ApiModel("当前引擎")
-public class CurrentEngineVo {
+public class CurrentEngineVO {
 
     @ApiModelProperty("字典名")
     private String dictname;

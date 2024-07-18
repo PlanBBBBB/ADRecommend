@@ -2,7 +2,7 @@ package com.planb.hander;
 
 import cn.hutool.json.JSONUtil;
 import com.planb.vo.Result;
-import com.planb.utils.WebUtils;
+import com.planb.util.WebUtils;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;

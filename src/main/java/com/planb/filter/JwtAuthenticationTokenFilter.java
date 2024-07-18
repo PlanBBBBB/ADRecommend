@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.planb.constant.UserConstants;
 import com.planb.security.LoginUser;
-import com.planb.utils.JwtUtil;
+import com.planb.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

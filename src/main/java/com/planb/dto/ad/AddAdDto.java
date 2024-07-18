@@ -9,7 +9,7 @@ import lombok.Data;
 public class AddAdDto {
 
     @ApiModelProperty("关键词，字典300，多选用逗号隔开")
-    private String keywords;
+    private String keyWords;
     @ApiModelProperty("广告图片url")
     private String imgUrl;
     @ApiModelProperty("广告跳转链接url")

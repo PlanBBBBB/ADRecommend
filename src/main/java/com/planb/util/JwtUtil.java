@@ -1,4 +1,4 @@
-package com.planb.utils;
+package com.planb.util;
 
 
 import io.jsonwebtoken.Claims;

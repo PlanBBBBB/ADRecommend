@@ -12,4 +12,4 @@
 
 # 技术栈
 
-SpringBoot + MyBatisPlus + SpringSecurity + Redis + MinIO + RabbitMQ
+SpringBoot + MyBatisPlus + SpringSecurity + Redis + MinIO + RabbitMQ + Caffenie

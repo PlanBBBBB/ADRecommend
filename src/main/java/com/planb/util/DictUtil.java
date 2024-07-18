@@ -1,4 +1,4 @@
-package com.planb.utils;
+package com.planb.util;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.planb.constant.RedisConstant;

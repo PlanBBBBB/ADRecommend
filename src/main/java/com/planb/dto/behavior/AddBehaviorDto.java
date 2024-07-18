@@ -13,4 +13,6 @@ public class AddBehaviorDto {
     private String adId;
     @ApiModelProperty("行为类型")
     private String action;
+    @ApiModelProperty("行为时间")
+    private String waitTime;
 }

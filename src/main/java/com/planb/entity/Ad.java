@@ -19,7 +19,7 @@ public class Ad {
     private String created;//创建时间
     private String modified;//修改时间
     private String isValid;//是否有效
-    private double position; //位置值（从0到10，数字越小越靠上）
+    private String position; //位置值（从0到10，数字越小越靠上）
     private int exposureCount;// 曝光次数
     private String type;//广告类型（字典：200）
 }

@@ -112,6 +112,12 @@
             <version>3.6.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>24.0.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>
