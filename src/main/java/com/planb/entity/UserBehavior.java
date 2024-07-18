@@ -15,5 +15,6 @@ public class UserBehavior {
     private String userId;
     private String adId;
     private String action;//字典：100
+    private String waitTime;
     private String created;
 }
