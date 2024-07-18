@@ -3,6 +3,7 @@ package com.planb.service.impl;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.planb.constant.RedisConstant;
@@ -330,7 +331,7 @@ public class AdServiceImpl implements IAdService {
     private List<Ad> recommendAdsByPositionAndExposure(User user, int numRecommendations) {
         List<String> userInterests = getUserInterests(user);
         List<Ad> allAds = getAllAds();
-        double maxPosition = allAds.stream().mapToDouble((ad)-> Double.parseDouble(ad.getPosition())).max().orElse(1.0);
+        double maxPosition = allAds.stream().mapToDouble((ad) -> Double.parseDouble(ad.getPosition())).max().orElse(1.0);
 
         // 为每个广告计算综合权重
         Map<Ad, Double> adWeightMap = new HashMap<>();
@@ -404,7 +405,12 @@ public class AdServiceImpl implements IAdService {
             }
             i++;
         }
-
+        // 增加曝光次数
+        CompletableFuture.runAsync(() -> diverseAds.forEach(ad -> {
+            LambdaUpdateWrapper<Ad> wrapper = new LambdaUpdateWrapper<>();
+            wrapper.set(Ad::getExposureCount, ad.getExposureCount() + 1);
+            adMapper.update(ad, wrapper);
+        }), executor);
         return diverseAds;
     }
 
