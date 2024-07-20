@@ -5,10 +5,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.redis.connection.DataType;
-import org.springframework.data.redis.core.Cursor;
-import org.springframework.data.redis.core.RedisCallback;
-import org.springframework.data.redis.core.ScanOptions;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +29,43 @@ public class RedisUtil implements ApplicationContextAware {
         RedisUtil.redisTemplate = applicationContext.getBean(StringRedisTemplate.class);
     }
 
-    /** -------------------key相关操作--------------------- */
+    /**
+     * -------------------key相关操作---------------------
+     */
+
+    /**
+     * 存入hash
+     *
+     * @param key key值
+     * @param map hash值
+     */
+    public static void setHash(String key, Map<String, String> map) {
+        redisTemplate.opsForHash().putAll(key, map);
+    }
+
+    /**
+     * 获取hash
+     *
+     * @param key key值
+     * @return hash
+     */
+    public static Map<String, String> getHash(String key) {
+        HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
+        return hashOperations.entries(key);
+    }
+
+    /**
+     * 更新hash
+     *
+     * @param key     key值
+     * @param hashKey hashKey
+     * @param value   hash值
+     */
+    public static void updateHashValue(String key, String hashKey, String value) {
+        HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
+        hashOperations.put(key, hashKey, value);
+    }
+
 
     /**
      * 删除key

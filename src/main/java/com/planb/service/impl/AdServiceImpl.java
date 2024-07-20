@@ -6,6 +6,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.planb.config.BaseUnCheckedException;
+import com.planb.constant.EngineConstant;
+import com.planb.constant.ErrorConstant;
+import com.planb.constant.LimiterConstant;
 import com.planb.constant.RedisConstant;
 import com.planb.dao.AdMapper;
 import com.planb.dao.UserBehaviorMapper;
@@ -40,6 +44,7 @@ public class AdServiceImpl implements IAdService {
 
     private final AdMapper adMapper;
     private final UserBehaviorMapper userBehaviorMapper;
+    private final RedisLimiterManager redisLimiterManager;
     private final ExecutorService executor = GlobalThreadPool.getInstance();
 
     @Override
@@ -114,29 +119,33 @@ public class AdServiceImpl implements IAdService {
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         User user = loginUser.getUser();
 
-        String engine = RedisUtil.get(RedisConstant.RECOMMEND_ENGINE);
+        // 限流操作
+        redisLimiterManager.doRateLimit(LimiterConstant.GET_RECOMMEND_KEY + user.getId());
+
+        Map<String, String> map = RedisUtil.getHash(RedisConstant.RECOMMEND_ENGINE);
+        String engine = map.get(RedisConstant.DEFAULT_ENGINE_NAME_KEY);
         List<Ad> recommendedAds;
         switch (engine) {
-            case "content":
+            case EngineConstant.CONTENT:
                 //基于内容推荐算法
                 recommendedAds = recommendAdsByContent(user, numRecommendations);
                 break;
-            case "coordinatedFiltering":
+            case EngineConstant.COORDINATED_FILTERING:
                 //基于协调过滤算法
                 recommendedAds = recommendAdsByCollaborativeFiltering(user, numRecommendations);
                 break;
-            case "SVD":
+            case EngineConstant.SVD:
                 //基于SVD算法
                 recommendedAds = recommendAdsBySVD(user, numRecommendations);
                 break;
-            case "positionAndExposure":
+            case EngineConstant.POSITION_AND_EXPOSURE:
                 //基于位置归一化和曝光频次控制算法
                 recommendedAds = recommendAdsByPositionAndExposure(user, numRecommendations);
                 break;
-            case "AI":
+            case EngineConstant.AI:
                 recommendedAds = recommendAdsByAI(user, numRecommendations);
             default:
-                throw new RuntimeException("未知的推荐引擎");
+                throw new BaseUnCheckedException(ErrorConstant.UNKNOWN_ENGINE);
         }
 
         // 添加多样性并探索性

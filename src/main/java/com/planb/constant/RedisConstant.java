@@ -26,7 +26,22 @@ public class RedisConstant {
     public static final String RECOMMEND_ENGINE = "recommend_engine";
 
     /**
-     * 默认推荐引擎
+     * 默认推荐引擎nameValue
      */
-    public static final String DEFAULT_RECOMMEND_ENGINE = "content";
+    public static final String DEFAULT_ENGINE_NAME_VALUE = "content";
+
+    /**
+     * 默认推荐引擎codeValue
+     */
+    public static final String DEFAULT_ENGINE_CODE_VALUE = "500000";
+
+    /**
+     * 默认推荐引擎codeKey
+     */
+    public static final String DEFAULT_ENGINE_CODE_KEY = "dictCode";
+
+    /**
+     * 默认推荐引擎nameKey
+     */
+    public static final String DEFAULT_ENGINE_NAME_KEY = "dictName";
 }

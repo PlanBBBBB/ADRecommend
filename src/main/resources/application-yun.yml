@@ -31,3 +31,9 @@ mybatis:
 
 BookHub:
   path: D:\BookHub\img\
+
+# AI
+yuapi:
+  client:
+    access-key: ha76uhffa12leo01fd6mzlwld4z5lf5a
+    secret-key: adkwsg4i1geob1blihqd66dcm8ik174i
