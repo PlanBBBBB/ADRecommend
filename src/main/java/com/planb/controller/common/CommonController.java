@@ -74,4 +74,11 @@ public class CommonController {
         return Result.ok(vos);
     }
 
+
+    @PostMapping("/getDictByParent")
+    @ApiOperation("根据parentCode查询字典")
+    public Result getDictByParent(@RequestBody GeneralIdDto dto) {
+        List<Dict> list = DictUtil.getDictByParent(dto.getId());
+        return Result.ok(list);
+    }
 }
