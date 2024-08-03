@@ -52,42 +52,38 @@ public class AdServiceImpl implements IAdService {
 
     @Override
     public void add(AddAdDto dto) {
-        CompletableFuture.runAsync(() -> {
-            Ad ad = new Ad();
-            BeanUtils.copyProperties(dto, ad);
-            adMapper.insert(ad);
-            this.storeAdToRedis();
-        }, executor);
+        Ad ad = new Ad();
+        BeanUtils.copyProperties(dto, ad);
+        adMapper.insert(ad);
+        this.storeAdToRedis();
     }
 
     @Override
     public void update(UpAdDto dto) {
-        CompletableFuture.runAsync(() -> {
-            Ad ad = adMapper.selectById(dto.getId());
-            BeanUtils.copyProperties(dto, ad);
-            adMapper.updateById(ad);
-            this.storeAdToRedis();
-        }, executor);
+        Ad ad = adMapper.selectById(dto.getId());
+        BeanUtils.copyProperties(dto, ad);
+        adMapper.updateById(ad);
+        this.storeAdToRedis();
     }
 
     @Override
     public void delete(String id) {
-        CompletableFuture.runAsync(() -> {
-            Ad ad = adMapper.selectById(id);
-            ad.setIsValid("0");
-            adMapper.updateById(ad);
-            this.storeAdToRedis();
-        }, executor);
+        Ad ad = adMapper.selectById(id);
+        ad.setIsValid("0");
+        adMapper.updateById(ad);
+        this.storeAdToRedis();
     }
 
     @Override
     public void storeAdToRedis() {
-        RedisUtil.delete(RedisConstant.AD);
-        LambdaQueryWrapper<Ad> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Ad::getIsValid, 1);
-        List<Ad> adList = adMapper.selectList(queryWrapper);
-        JSONArray from = JSONArray.from(adList);
-        RedisUtil.set(RedisConstant.AD, from.toJSONString(JSONWriter.Feature.WriteMapNullValue));
+        CompletableFuture.runAsync(() -> {
+            RedisUtil.delete(RedisConstant.AD);
+            LambdaQueryWrapper<Ad> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Ad::getIsValid, 1);
+            List<Ad> adList = adMapper.selectList(queryWrapper);
+            JSONArray from = JSONArray.from(adList);
+            RedisUtil.set(RedisConstant.AD, from.toJSONString(JSONWriter.Feature.WriteMapNullValue));
+        }, executor);
     }
 
 
@@ -147,9 +143,18 @@ public class AdServiceImpl implements IAdService {
             throw new RuntimeException(AIConstant.ERROR_MESSAGE);
         }
         List<Ad> adList = new ArrayList<>();
+        List<Ad> adListAll;
+        if (RedisUtil.hasKey(RedisConstant.AD)) {
+            String adListJson = RedisUtil.get(RedisConstant.AD);
+            adListAll = JSONArray.parseArray(adListJson, Ad.class);
+        } else {
+            LambdaQueryWrapper<Ad> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Ad::getIsValid, 1);
+            adListAll = adMapper.selectList(queryWrapper);
+            this.storeAdToRedis();
+        }
         for (String s : split) {
-            Ad ad = adMapper.selectById(s);
-            adList.add(ad);
+            adListAll.stream().filter(ad1 -> ad1.getId().equals(s)).findFirst().ifPresent(adList::add);
         }
         return adList;
     }
