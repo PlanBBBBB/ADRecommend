@@ -16,11 +16,6 @@ public class RedisConstant {
     public static final String AD = "ad";
 
     /**
-     * 用户行为
-     */
-    public static final String USER_BEHAVIOR = "user_behavior";
-
-    /**
      * 推荐规则key
      */
     public static final String RECOMMEND_ENGINE = "recommend_engine";

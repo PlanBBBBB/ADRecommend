@@ -60,18 +60,7 @@ public class RecommendUtil {
      * 获取所有用户的行为数据
      */
     public List<UserBehavior> getAllUserBehaviors() {
-        // 从缓存或数据库获取用户行为数据
-        String jsonStr = RedisUtil.get(RedisConstant.USER_BEHAVIOR);
-        List<UserBehavior> list = JSONArray.parseArray(jsonStr, UserBehavior.class);
-        if (ValidateUtil.isBlank(list)) {
-            List<UserBehavior> list1 = userBehaviorMapper.selectList(null);
-            CompletableFuture.runAsync(() -> {
-                JSONArray from = JSONArray.from(list1);
-                RedisUtil.set(RedisConstant.USER_BEHAVIOR, from.toJSONString(JSONWriter.Feature.WriteMapNullValue));
-            }, executor);
-            return list1;
-        }
-        return list;
+        return userBehaviorMapper.selectList(null);
     }
 
     /**

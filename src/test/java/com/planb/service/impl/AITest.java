@@ -59,4 +59,25 @@ public class AITest {
 
     }
 
+    @Test
+    public void testPro() {
+
+        // 构建AI请求消息
+        String userMessage = "新增用户行为信息：\n" +
+                "【【【\n" +
+                "behaviorId|userId|adId|action|created\n" +
+                "1|1|1|100001|2024-06-26 11:01:13\n" +
+                "2|2|1|100001|2024-06-26 11:04:18\n" +
+                "3|3|1|100002|2024-06-26 11:04:18\n" +
+                "4|2|1|100001|2024-06-26 11:32:59\n" +
+                "5|4|1|100002|2024-07-18 22:02:45\n" +
+                "6|2|3|100001|2024-07-18 22:03:01\n" +
+                "7|4|3|100002|2024-07-18 22:05:14\n" +
+                "8|6|5|100001|2024-07-18 22:05:30\n" +
+                "】】】";
+        String result = aiUtil.doSyncStableRequest(AIConstant.SYSTEM_MESSAGE, userMessage);
+        System.out.println(result);
+
+    }
+
 }

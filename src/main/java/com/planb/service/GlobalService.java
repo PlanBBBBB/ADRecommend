@@ -5,7 +5,5 @@ public interface GlobalService {
 
     void initAd();
 
-    void initUserBehavior();
-
     void initEngine();
 }

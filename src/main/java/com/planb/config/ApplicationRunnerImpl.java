@@ -23,8 +23,6 @@ public class ApplicationRunnerImpl implements ApplicationRunner {
         globalService.initDict();
         // 初始化广告数据
         globalService.initAd();
-        // 初始化用户行为
-        globalService.initUserBehavior();
         // 初始化推荐规则引擎
         globalService.initEngine();
     }
