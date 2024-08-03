@@ -24,4 +24,5 @@ public interface IAdService {
 
     void storeAdToRedis();
 
+    List<Ad> recommendByAI(String id);
 }

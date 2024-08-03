@@ -78,4 +78,11 @@ public class AdController {
         List<Ad> list = adService.recommend(Integer.parseInt(dto.getId()));
         return Result.ok(list);
     }
+
+    @GetMapping("recommendByAI")
+    @ApiOperation("推荐广告（AI）")
+    public Result recommendByAI(@RequestBody GeneralIdDto dto) {
+        List<Ad> list = adService.recommendByAI(dto.getId());
+        return Result.ok(list);
+    }
 }

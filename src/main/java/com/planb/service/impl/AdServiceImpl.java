@@ -5,6 +5,7 @@ import com.alibaba.fastjson2.JSONWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.planb.constant.AIConstant;
 import com.planb.constant.LimiterConstant;
 import com.planb.constant.RedisConstant;
 import com.planb.dao.AdMapper;
@@ -17,6 +18,7 @@ import com.planb.recommend.stratege.RecommendationStrategy;
 import com.planb.recommend.factory.RecommendationStrategyFactory;
 import com.planb.security.LoginUser;
 import com.planb.service.IAdService;
+import com.planb.util.AiUtil;
 import com.planb.util.DictUtil;
 import com.planb.util.RecommendUtil;
 import com.planb.util.RedisUtil;
@@ -41,6 +43,7 @@ public class AdServiceImpl implements IAdService {
     private final ExecutorService executor = GlobalThreadPool.getInstance();
     private final RecommendUtil recommendUtil;
     private final RecommendationStrategyFactory recommendationStrategyFactory;
+    private final AiUtil aiUtil;
 
     @Override
     public Ad getAdById(String id) {
@@ -126,6 +129,29 @@ public class AdServiceImpl implements IAdService {
 
         // 添加多样性并探索性
         return recommendUtil.addDiversityAndExploration(recommendedAds, numRecommendations);
+    }
+
+
+    @Override
+    public List<Ad> recommendByAI(String num) {
+        // 获取用户信息
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        String userId = loginUser.getUser().getId();
+
+        // 构建AI请求消息
+        String userMessage = "请对编号为" + userId + "的用户推荐" + num + "个广告";
+        String result = aiUtil.doSyncStableRequest(AIConstant.SYSTEM_MESSAGE, userMessage);
+        String[] split = result.split(",");
+        if (split.length != Integer.parseInt(num)) {
+            throw new RuntimeException(AIConstant.ERROR_MESSAGE);
+        }
+        List<Ad> adList = new ArrayList<>();
+        for (String s : split) {
+            Ad ad = adMapper.selectById(s);
+            adList.add(ad);
+        }
+        return adList;
     }
 
 }

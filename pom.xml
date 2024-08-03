@@ -118,17 +118,22 @@
             <version>24.0.1</version>
         </dependency>
 
-        <!--AI-->
-        <dependency>
-            <groupId>com.yucongming</groupId>
-            <artifactId>yucongming-java-sdk</artifactId>
-            <version>0.0.4</version>
-        </dependency>
-
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson</artifactId>
             <version>3.21.3</version>
+        </dependency>
+        <!--csv操作-->
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>5.5.2</version>
+        </dependency>
+        <!--智谱AI-->
+        <dependency>
+            <groupId>cn.bigmodel.openapi</groupId>
+            <artifactId>oapi-java-sdk</artifactId>
+            <version>release-V4-2.0.2</version>
         </dependency>
     </dependencies>
 

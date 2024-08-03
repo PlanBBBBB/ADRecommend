@@ -25,7 +25,7 @@ import java.util.UUID;
 public class FileController {
 
 
-    @Value("${BookHub.path}")
+    @Value("${AdRecommend.path}")
     private String basePath;
 
 
