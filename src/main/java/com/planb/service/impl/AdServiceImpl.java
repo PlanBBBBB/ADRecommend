@@ -174,6 +174,9 @@ public class AdServiceImpl implements IAdService {
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         String userId = loginUser.getUser().getId();
 
+        // 限流操作
+        redisLimiterManager.doRateLimit(LimiterConstant.GET_RECOMMEND_KEY + userId);
+
         // 获取广告信息
         Map<String, String> map = RedisUtil.getHash(RedisConstant.AD);
 
