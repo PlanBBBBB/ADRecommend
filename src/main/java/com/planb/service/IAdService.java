@@ -5,6 +5,7 @@ import com.planb.dto.ad.AddAdDto;
 import com.planb.dto.ad.PageAdDto;
 import com.planb.dto.ad.UpAdDto;
 import com.planb.entity.Ad;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 
@@ -24,5 +25,7 @@ public interface IAdService {
 
     void storeAdToRedis();
 
-    List<Ad> recommendByAI(String id);
+    List<Ad> recommendByAI(String num);
+
+    SseEmitter recommendByAISSe(String num);
 }

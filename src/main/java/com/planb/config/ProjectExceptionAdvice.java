@@ -1,4 +1,4 @@
-package com.planb.util;
+package com.planb.config;
 
 import com.planb.vo.Result;
 import org.springframework.web.bind.annotation.ExceptionHandler;

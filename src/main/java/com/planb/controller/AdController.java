@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 
@@ -84,5 +85,11 @@ public class AdController {
     public Result recommendByAI(@RequestBody GeneralIdDto dto) {
         List<Ad> list = adService.recommendByAI(dto.getId());
         return Result.ok(list);
+    }
+
+    @GetMapping("recommendByAISSe")
+    @ApiOperation("推荐广告（AI）SSE实现")
+    public SseEmitter recommendByAISSe(GeneralIdDto dto) {
+        return adService.recommendByAISSe(dto.getId());
     }
 }
