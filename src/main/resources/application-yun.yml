@@ -13,6 +13,39 @@ spring:
     port: 6379
     database: 0
     password: 123456
+  # 分库分表配置
+  shardingsphere:
+    #数据源配置
+    datasource:
+      # 多数据源以逗号隔开即可
+      names: ad_recommend
+      ad_recommend:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://127.0.0.1:3636/ad_recommend
+        username: root
+        password: root
+    # 规则配置
+    rules:
+      sharding:
+        # 分片算法配置
+        sharding-algorithms:
+          # 自定义分片规则名
+          answer-table-inline:
+            ## inline 类型是简单的配置文件里面就能写的类型，其他还有自定义类等等
+            type: INLINE
+            props:
+              # 使用EXTRACT函数从created字段中提取年份
+              # 并将结果作为分片键
+              algorithm-expression: user_behavior_$->{EXTRACT(YEAR FROM created)}
+        tables:
+          user_answer:
+            actual-data-nodes: ad_recommend.user_behavior_$->{2024..2025}
+            # 分表策略
+            table-strategy:
+              standard:
+                sharding-column: created
+                sharding-algorithm-name: answer-table-inline
 
 mybatis-plus:
   global-config:
