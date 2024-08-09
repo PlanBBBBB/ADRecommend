@@ -11,6 +11,11 @@
 
 # 项目架构
 
+## 项目时序图
+
+<img src="images\时序图.png" alt="时序图" style="zoom: 45%;" />
+
+
 ## 项目架构图
 
 <img src="images\架构图.png" alt="架构图" style="zoom: 45%;" />
