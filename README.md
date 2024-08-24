@@ -126,6 +126,30 @@ behaviorId|userId|adId|action|created
 
 
 
+
+## 如何保证AI回复的准确性及可用性
+
+1. 设定prompt预设模板，让ai的回复更加规范 
+2. 反馈机制：采取用户对于广告的行为持续投递给ai 
+3. 兜底方案：除了ai的回答以外，基于自实现的协同过滤等非ai来实现推荐，即使ai服务挂了也能用
+
+4. 缓存优化
+5. 降级兜底方案
+
+
+
+## 如何验证AI回复的准确性
+
+1. 离线评估
+2. A/B测试
+3. 用户反馈：
+   - 直接反馈：收集用户的直接反馈，比如通过问卷调查、用户评价等方式获取用户对推荐内容的满意度。
+   - 间接反馈：观察用户的互动行为，如点击、停留时间、分享、评论等，这些行为可以间接反映推荐内容的质量。
+
+
+
+
+
 # 项目优化
 
 ## 实时推送
@@ -211,6 +235,8 @@ public SseEmitter recommendByAISSe(String num) {
 由于 AIGC 功能资源有限，故需要限制用户在前台不断刷新发送调用 AI 的请求，进行限流。
 
 本项目采用基于 Redisson 的 Ratelimiter 实现限流，限制用户请求。
+
+> 具体分布式限流详见[本站链接](https://planbbbbb.github.io/2024/05/14/Study-%E5%88%86%E5%B8%83%E5%BC%8F/)
 
 ~~~java
 public void doRateLimit(String key) {
